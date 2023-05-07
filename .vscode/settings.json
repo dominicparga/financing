@@ -1,4 +1,37 @@
 {
+    // PYTHON
+
+    "python.defaultInterpreterPath": "python3.10",
+
+    // linting
+
+    "python.analysis.typeCheckingMode": "strict",
+    // https://pylint.readthedocs.io/en/latest/user_guide/configuration/all-options.html
+    // https://pylint.readthedocs.io/en/latest/user_guide/checkers/features.html
+
+    // formatting
+
+    "python.formatting.provider": "black",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+    "python.formatting.blackArgs": [
+        "--line-length=100"
+    ],
+    "isort.args": ["--profile", "black"],
+
+    // testing
+
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [ "tests" ],
+
+    // MARKDOWN
+
     "markdownlint.config": {
         // rules: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
         // official CommonMark-specification: https://spec.commonmark.org

@@ -23,30 +23,40 @@
 		"vscode": {
             "settings": {},
 			"extensions": [
-                // color themes
+                // COLOR THEMES
                 "dracula-theme.theme-dracula",
                 "arcticicestudio.nord-visual-studio-code",
-                // icon themes
+                // ICON THEMES
                 "pkief.material-icon-theme",
 
-                // data files
+                // DATA FILES
                 "mechatroner.rainbow-csv",
                 "redhat.vscode-yaml",
                 "redhat.vscode-xml",
                 "bungcip.better-toml",
 
-                // git
+                // GIT
                 "donjayamanne.githistory",
                 "eamodio.gitlens",
 
-                // markdown
+                // MARKDOWN
                 "DavidAnson.vscode-markdownlint",
 
-                // bash
+                // BASH
                 "timonwong.shellcheck",
 
-                // rust
-                "rust-lang.rust-analyzer"
+                // PYTHON
+                // general
+                "ms-python.python",
+                // formatting
+                "ms-python.isort",
+                "ms-python.black-formatter",
+                // linting
+                "ms-python.pylint",
+                // language server
+                "ms-python.pylance"
+                // handy indentation
+                // "kevinrose.vsc-python-indent"
 			]
 		}
 	}
