@@ -43,7 +43,10 @@
                 "DavidAnson.vscode-markdownlint",
 
                 // bash
-                "timonwong.shellcheck"
+                "timonwong.shellcheck",
+
+                // rust
+                "rust-lang.rust-analyzer"
 			]
 		}
 	}
