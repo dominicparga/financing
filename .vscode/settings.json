@@ -1,4 +1,50 @@
 {
+    // PYTHON
+
+    "python.defaultInterpreterPath": "python3.10",
+
+    // linting
+
+    "python.analysis.typeCheckingMode": "strict",
+    // https://pylint.readthedocs.io/en/latest/user_guide/configuration/all-options.html
+    // https://pylint.readthedocs.io/en/latest/user_guide/checkers/features.html
+    "python.linting.pylintArgs": [
+        "--max-line-length=100",
+        "--disable=missing-class-docstring",
+        "--disable=missing-function-docstring",
+        "--disable=broad-exception-raised",
+        "--good-names-rgxs=^[_a-z][_a-z0-9]?$"
+    ],
+
+    // formatting
+
+    "python.formatting.provider": "black",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+    "python.formatting.blackArgs": [
+        "--line-length=100"
+    ],
+    "isort.args": ["--profile", "black"],
+
+    // testing
+
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+
+    // MARKDOWN
+
+    "[markdown]": {
+        "editor.formatOnSave": true
+    },
+
     "markdownlint.config": {
         // rules: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
         // official CommonMark-specification: https://spec.commonmark.org
@@ -17,7 +63,7 @@
         "MD012": true,
         // line-length
         "MD013": {
-            "line_length": -1
+            "line_length": 100
         },
         // no duplicate heading/header
         "MD024": true,
@@ -42,5 +88,15 @@
             // recommended code block style for sphinx
             "style": "fenced"
         }
+    },
+
+    // JSON
+
+    "[json]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace",
+        "editor.formatOnSave": true
     }
 }

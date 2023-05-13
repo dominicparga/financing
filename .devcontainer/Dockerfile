@@ -1,13 +1,29 @@
 FROM docker.io/dominicparga/devcontainer:latest
 
+ARG PY_VERSION="Python 3.10"
+
 USER root
-RUN apt-get update &&\
+RUN \
+# install dependencies
+    apt-get update &&\
     apt-get install --yes --no-install-suggests --no-install-recommends \
-        curl \
+        python3 python3-pip \
     &&\
-    apt-get clean
+    apt-get clean &&\
+# check python version
+    ((python3 --version | grep "$PY_VERSION" > null) || (echo "ERROR: Expected $PY_VERSION, actual $(python3 --version)" && exit 310))
 
 USER vscode
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
-ENV PATH="/home/vscode/.cargo/bin:${PATH}"
-# RUN echo 'source ${HOME}/.cargo/env' >> ${HOME}/.bashrc
+
+RUN \
+    pip install \
+        # testing
+        pytest \
+        # linting
+        pylint \
+        # formatting, stricter than autopep8
+        black \
+        isort
+
+LABEL maintainer="dominic.parga@gmail.com"
+LABEL description="Financing"
