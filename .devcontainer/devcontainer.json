@@ -21,7 +21,9 @@
 	// Configure tool-specific properties.
     "customizations": {
 		"vscode": {
-            "settings": {},
+            "settings": {
+                "extensions.ignoreRecommendations": true
+            },
 			"extensions": [
                 // COLOR THEMES
                 "dracula-theme.theme-dracula",
