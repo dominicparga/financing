@@ -47,6 +47,11 @@
                 // BASH
                 "timonwong.shellcheck",
 
+                // RUST
+                "rust-lang.rust-analyzer",
+                // debugging
+                "vadimcn.vscode-lldb",
+
                 // PYTHON
                 // general
                 "ms-python.python",

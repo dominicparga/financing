@@ -1,4 +1,6 @@
-/custom/
-
+# PYTHON
 __pycache__/
 .pytest_cache/
+
+# CUSTOM
+/custom/
