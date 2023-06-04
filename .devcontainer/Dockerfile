@@ -14,7 +14,7 @@ RUN \
     &&\
     apt-get clean &&\
 # check python version
-    ((python3 --version | grep "$PY_VERSION" > null) || (echo "ERROR: Expected $PY_VERSION, actual $(python3 --version)" && exit 310))
+    ((python3 --version | grep "$PY_VERSION" > /dev/null) || (echo "ERROR: Expected $PY_VERSION, actual $(python3 --version)" && exit 310))
 
 USER vscode
 RUN \
