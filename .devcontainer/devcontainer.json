@@ -35,7 +35,7 @@
                 "mechatroner.rainbow-csv",
                 "redhat.vscode-yaml",
                 "redhat.vscode-xml",
-                "bungcip.better-toml",
+                "tamasfe.even-better-toml",
 
                 // GIT
                 "donjayamanne.githistory",
