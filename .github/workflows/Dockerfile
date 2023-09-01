@@ -1,6 +1,6 @@
 #
 
-FROM docker.io/rust:latest AS builder
+FROM docker.io/rust:1.72.0 AS builder
 
 ARG MY_APP=billo
 
