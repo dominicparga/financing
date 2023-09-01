@@ -13,6 +13,12 @@ clap = { version = "4", features = ["derive"] }
 # json serializer
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# initialization of statics during runtime
+lazy_static = { version = "1" }
+# regex
+regex = { version = "1" }
+# date and time
+chrono = { version = "0.4" }
 
 [lib]
 name = "billo"

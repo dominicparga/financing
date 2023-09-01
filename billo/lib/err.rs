@@ -1,7 +1,7 @@
-use std::{
-	fmt::{self, Display},
-	io, result,
-};
+use std::fmt;
+use std::fmt::Display;
+use std::io;
+use std::result;
 
 pub type Feedback = result::Result<(), Msg>;
 pub type Result<T> = result::Result<T, Msg>;
