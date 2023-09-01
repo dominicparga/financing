@@ -18,8 +18,12 @@
         {
             "id": "args",
             "description": "List of arguments",
-            "default": "--help",
-            "type": "promptString"
+            "default": "run --config ${workspaceFolder}/.vscode/debugging.billo.json",
+            "type": "pickString",
+            "options": [
+                "--help",
+                "run --config ${workspaceFolder}/.vscode/debugging.billo.json"
+            ]
         }
     ]
 }
