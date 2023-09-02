@@ -3,13 +3,19 @@ mod datastructures;
 use crate::running::datastructures::Config;
 use std::fmt::Write as _;
 use std::fs;
-use std::path::Path;
 use std::path::PathBuf;
 
 fn ensure_input(config_filepathbuf: &PathBuf) -> err::Result<Config> {
 	let mut err_msg: String = String::new();
 
-	if !config_filepathbuf.is_file() {
+	if !config_filepathbuf.exists() {
+		writeln!(
+			err_msg,
+			"Config file does not exist: {}",
+			config_filepathbuf.to_string_lossy()
+		)
+		.expect("Should already handle error that config filepath being dirpath");
+	} else if !config_filepathbuf.is_file() {
 		writeln!(
 			err_msg,
 			"Expected config as file, but dir is provided: {}",
@@ -17,10 +23,6 @@ fn ensure_input(config_filepathbuf: &PathBuf) -> err::Result<Config> {
 		)
 		.expect("Should already handle error that config filepath being dirpath");
 	}
-	// some debugging, could be removed
-	let config_dirpathbuf: &Path = config_filepathbuf.parent().expect("Expected a parent");
-	fs::write(config_dirpathbuf.join("greetings.txt"), "Hello world!")
-		.expect("Unable to write file");
 
 	if err_msg.is_empty() {
 		let json_str: String = fs::read_to_string(config_filepathbuf)
