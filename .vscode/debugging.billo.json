@@ -1,5 +1,18 @@
 {
-    "booking-list": [
+    "analysis": [],
+    "regular bookings": [
+        {
+            "date": "2023.09.01",
+            "sender": "",
+            "receiver": "",
+            "amount": "300,20 EUR",
+            "turnus": "each 3 months",
+            "labels": [
+                "Bargeld"
+            ]
+        }
+    ],
+    "ongoing bookings": [
         {
             "date": "2023.09.01",
             "sender": "",
@@ -7,7 +20,7 @@
             "amount": "300,20 EUR",
             "topic": "",
             "reference": "",
-            "label_list": [
+            "labels": [
                 "Bargeld"
             ]
         }

@@ -13,7 +13,7 @@ type Reference = String;
 
 #[derive(Deserialize, Debug)]
 pub enum Label {
-	#[serde(alias = "Bargeld")]
+	#[serde(rename = "Bargeld")]
 	CASH,
 }
 
@@ -31,6 +31,24 @@ impl FromStr for Currency {
 			_ => Err(err::Msg::from(format!("Unknown currency {}", s))),
 		}
 	}
+}
+
+#[derive(Deserialize, Debug)]
+enum Turnus {
+	#[serde(alias = "yearly")]
+	#[serde(alias = "each 12 months")]
+	PER_YEAR_1_TIME,
+	#[serde(alias = "half a year")]
+	#[serde(alias = "each 6 months")]
+	PER_YEAR_2_TIMES,
+	#[serde(alias = "each 4 months")]
+	PER_YEAR_3_TIMES,
+	#[serde(alias = "each quarter")]
+	#[serde(alias = "each 3 months")]
+	PER_YEAR_4_TIMES,
+	#[serde(alias = "monthly")]
+	#[serde(alias = "each 1 months")]
+	PER_MONTH_1_TIME,
 }
 
 #[derive(Deserialize, Debug)]
@@ -106,6 +124,9 @@ fn de_date<'de, D: Deserializer<'de>>(deserializer: D) -> Result<NaiveDate, D::E
 }
 
 #[derive(Deserialize, Debug)]
+pub struct Analysis {}
+
+#[derive(Deserialize, Debug)]
 pub struct Booking {
 	#[serde(deserialize_with = "de_date")]
 	date: NaiveDate,
@@ -115,11 +136,29 @@ pub struct Booking {
 	amount: Amount,
 	topic: Topic,
 	reference: Reference,
+	#[serde(rename = "labels")]
+	label_list: Vec<Label>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct Regularity {
+	#[serde(deserialize_with = "de_date")]
+	date: NaiveDate,
+	sender: Sender,
+	receiver: Receiver,
+	#[serde(deserialize_with = "de_amount")]
+	amount: Amount,
+	turnus: Turnus,
+	#[serde(rename = "labels")]
 	label_list: Vec<Label>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
-	#[serde(rename = "booking-list")]
+	#[serde(rename = "analysis")]
+	pub analysis_list: Vec<Analysis>,
+	#[serde(rename = "regular bookings")]
+	pub regularity_list: Vec<Regularity>,
+	#[serde(rename = "ongoing bookings")]
 	pub booking_list: Vec<Booking>,
 }

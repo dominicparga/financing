@@ -43,5 +43,5 @@ pub fn run(config_filepathbuf: PathBuf) {
 		}
 	};
 
-	println!("{:?}", config.booking_list)
+	println!("{:?}", config)
 }
