@@ -25,5 +25,6 @@ jobs:
         with:
           context: .
           file: ./.github/workflows/Dockerfile
+          platforms: linux/amd64, linux/arm64
           tags: dominicparga/billo:${{ github.sha }},dominicparga/billo:latest
           push: true
