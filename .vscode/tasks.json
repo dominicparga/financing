@@ -2,8 +2,20 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "[BILLO] Build and Run",
+            "label": "Cargo Build and Run [vscode-devcontainer]",
             "command": "cargo run --manifest-path billo/Cargo.toml -- ${input:args}",
+            "type": "shell",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "focus": true,
+                "clear": true
+            },
+            "group": "build"
+        },
+        {
+            "label": "Docker Build [vscode-local]",
+            "command": "${workspaceFolder}/scripts/docker_build.sh",
             "type": "shell",
             "problemMatcher": [],
             "presentation": {

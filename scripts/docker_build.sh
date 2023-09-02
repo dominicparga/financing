@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
 hub='docker.io/dominicparga'
-image_name='devcontainer'
-tag='20230514'
+image_name='billo'
+tag='20230902'
 
 root_dirpath=$(dirname "$(readlink -f "${0}")")/..
 
