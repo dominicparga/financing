@@ -6,20 +6,24 @@ use serde::{de, Deserialize, Deserializer};
 use serde_json::Value;
 use std::str::FromStr;
 
-type Sender = String;
-type Receiver = String;
-type Topic = String;
-type Reference = String;
+#[derive(Deserialize, Debug)]
+pub struct Sender(String);
 
 #[derive(Deserialize, Debug)]
-pub enum Label {
-	#[serde(rename = "Bargeld")]
-	CASH,
-}
+pub struct Receiver(String);
+
+#[derive(Deserialize, Debug)]
+pub struct Topic(String);
+
+#[derive(Deserialize, Default, Debug)]
+pub struct Reference(String);
+
+#[derive(Deserialize, Debug)]
+pub struct Label(String);
 
 #[derive(Deserialize, Debug)]
 pub enum Currency {
-	EUR,
+	Eur,
 }
 
 impl FromStr for Currency {
@@ -27,7 +31,7 @@ impl FromStr for Currency {
 
 	fn from_str(s: &str) -> err::Result<Currency> {
 		match s {
-			"EUR" => Ok(Currency::EUR),
+			"EUR" => Ok(Currency::Eur),
 			_ => Err(err::Msg::from(format!("Unknown currency {}", s))),
 		}
 	}
@@ -35,20 +39,33 @@ impl FromStr for Currency {
 
 #[derive(Deserialize, Debug)]
 enum Turnus {
-	#[serde(alias = "yearly")]
-	#[serde(alias = "each 12 months")]
-	PER_YEAR_1_TIME,
-	#[serde(alias = "half a year")]
-	#[serde(alias = "each 6 months")]
-	PER_YEAR_2_TIMES,
+	#[serde(alias = "once")]
+	Once,
+	#[serde(alias = "each 12 months", alias = "yearly")]
+	PerYear1Time {
+		#[serde(rename = "is active")]
+		is_active: bool,
+	},
+	#[serde(alias = "each 6 months", alias = "half a year")]
+	PerYear2Times {
+		#[serde(rename = "is active")]
+		is_active: bool,
+	},
 	#[serde(alias = "each 4 months")]
-	PER_YEAR_3_TIMES,
-	#[serde(alias = "each quarter")]
-	#[serde(alias = "each 3 months")]
-	PER_YEAR_4_TIMES,
-	#[serde(alias = "monthly")]
-	#[serde(alias = "each 1 months")]
-	PER_MONTH_1_TIME,
+	PerYear3Times {
+		#[serde(rename = "is active")]
+		is_active: bool,
+	},
+	#[serde(alias = "each 3 months", alias = "each quarter")]
+	PerYear4Times {
+		#[serde(rename = "is active")]
+		is_active: bool,
+	},
+	#[serde(alias = "each 1 months", alias = "monthly")]
+	PerMonth1Time {
+		#[serde(rename = "is active")]
+		is_active: bool,
+	},
 }
 
 #[derive(Deserialize, Debug)]
@@ -85,7 +102,7 @@ impl FromStr for Amount {
 	}
 }
 
-fn de_amount<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Amount, D::Error> {
+fn deserialize_amount<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Amount, D::Error> {
 	match Value::deserialize(deserializer)
 		.map_err(|e| e.to_string())
 		.map_err(err::Msg::from)
@@ -104,7 +121,7 @@ fn de_amount<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Amount, D::Er
 	}
 }
 
-fn de_date<'de, D: Deserializer<'de>>(deserializer: D) -> Result<NaiveDate, D::Error> {
+fn deserialize_date<'de, D: Deserializer<'de>>(deserializer: D) -> Result<NaiveDate, D::Error> {
 	match Value::deserialize(deserializer)
 		.map_err(|e| e.to_string())
 		.map_err(err::Msg::from)
@@ -123,31 +140,26 @@ fn de_date<'de, D: Deserializer<'de>>(deserializer: D) -> Result<NaiveDate, D::E
 	}
 }
 
-#[derive(Deserialize, Debug)]
-pub struct Analysis {}
+fn default_turnus() -> Turnus {
+	Turnus::Once
+}
 
-#[derive(Deserialize, Debug)]
-pub struct Booking {
-	#[serde(deserialize_with = "de_date")]
-	date: NaiveDate,
-	sender: Sender,
-	receiver: Receiver,
-	#[serde(deserialize_with = "de_amount")]
-	amount: Amount,
-	topic: Topic,
-	reference: Reference,
-	#[serde(rename = "labels")]
-	label_list: Vec<Label>,
+fn default_true() -> bool {
+	true
 }
 
 #[derive(Deserialize, Debug)]
-pub struct Regularity {
-	#[serde(deserialize_with = "de_date")]
+pub struct Booking {
+	#[serde(deserialize_with = "deserialize_date")]
 	date: NaiveDate,
 	sender: Sender,
 	receiver: Receiver,
-	#[serde(deserialize_with = "de_amount")]
+	#[serde(deserialize_with = "deserialize_amount")]
 	amount: Amount,
+	topic: Topic,
+	#[serde(default)]
+	reference: Reference,
+	#[serde(default = "default_turnus")]
 	turnus: Turnus,
 	#[serde(rename = "labels")]
 	label_list: Vec<Label>,
@@ -155,10 +167,6 @@ pub struct Regularity {
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
-	#[serde(rename = "analysis")]
-	pub analysis_list: Vec<Analysis>,
-	#[serde(rename = "regular bookings")]
-	pub regularity_list: Vec<Regularity>,
 	#[serde(rename = "ongoing bookings")]
 	pub booking_list: Vec<Booking>,
 }

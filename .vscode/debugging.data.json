@@ -1,0 +1,19 @@
+{
+    "ongoing bookings": [
+        {
+            "date": "2023.09.01",
+            "sender": "",
+            "receiver": "",
+            "amount": "300,20 EUR",
+            "topic": "",
+            "turnus": {
+                "each 3 months": {
+                    "is active": true
+                }
+            },
+            "labels": [
+                "Bargeld"
+            ]
+        }
+    ]
+}

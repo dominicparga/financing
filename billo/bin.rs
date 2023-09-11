@@ -1,15 +1,18 @@
+use std::path::PathBuf;
+
 use billo;
 use clap::Parser;
 use clap::Subcommand;
-use std::path::PathBuf;
 
 #[derive(Subcommand)]
 enum Command {
 	/// Config based runner
 	#[command(name = "run")]
 	RunConfig {
-		#[arg(long = "config", value_name = "PATH")]
-		config_filepathbuf: PathBuf,
+		#[arg(long = "analysis", value_name = "PATH")]
+		analysis_config: PathBuf,
+		#[arg(long = "data", value_name = "PATH")]
+		data_config: PathBuf,
 	},
 }
 
@@ -26,6 +29,16 @@ struct Cli {
 fn main() {
 	let cli: Cli = Cli::parse();
 	match cli.command {
-		Command::RunConfig { config_filepathbuf } => billo::running::run(config_filepathbuf),
+		Command::RunConfig {
+			analysis_config,
+			data_config,
+		} => billo::running::run(
+			billo::running::AnalysisConfig {
+				filepath: analysis_config,
+			},
+			billo::running::DataConfig {
+				filepath: data_config,
+			},
+		),
 	}
 }

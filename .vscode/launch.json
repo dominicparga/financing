@@ -9,7 +9,11 @@
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/billo/target/debug/billo",
-            "args": ["run", "--config", "${workspaceFolder}/.vscode/debugging.billo.json"],
+            "args": [
+                "run",
+                "--analysis", "${workspaceFolder}/.vscode/debugging.analysis.json",
+                "--data", "${workspaceFolder}/.vscode/debugging.data.json",
+            ],
             "cwd": "${workspaceFolder}"
         }
         // {
