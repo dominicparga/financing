@@ -1,10 +1,25 @@
 {
     "ongoing bookings": [
         {
-            "date": "2023.09.01",
+            "date": "2023.06.30",
             "sender": "",
             "receiver": "",
             "amount": "300,20 EUR",
+            "topic": "",
+            "turnus": {
+                "each 3 months": {
+                    "is active": true
+                }
+            },
+            "labels": [
+                "Bargeld"
+            ]
+        },
+        {
+            "date": "2023.06.29",
+            "sender": "",
+            "receiver": "",
+            "amount": "202,60 EUR",
             "topic": "",
             "turnus": {
                 "each 3 months": {

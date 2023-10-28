@@ -2,7 +2,19 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Cargo Build and Run [vscode-devcontainer]",
+            "label": "[devcontainer] Cargo Build",
+            "command": "cargo build --manifest-path billo/Cargo.toml",
+            "type": "shell",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "focus": true,
+                "clear": true
+            },
+            "group": "build"
+        },
+        {
+            "label": "[devcontainer] Cargo Build and Run",
             "command": "cargo run --manifest-path billo/Cargo.toml -- ${input:args}",
             "type": "shell",
             "problemMatcher": [],
@@ -14,7 +26,7 @@
             "group": "build"
         },
         {
-            "label": "Docker Build [vscode-local]",
+            "label": "[macOS] Docker Build",
             "command": "${workspaceFolder}/scripts/docker_build.sh",
             "type": "shell",
             "problemMatcher": [],

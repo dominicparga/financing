@@ -1,4 +1,6 @@
+use crate::datetime;
 use crate::err;
+use crate::running::configuring::{Currency, Label};
 use chrono::NaiveDate;
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -17,25 +19,6 @@ pub struct Topic(String);
 
 #[derive(Deserialize, Default, Debug)]
 pub struct Reference(String);
-
-#[derive(Deserialize, Debug)]
-pub struct Label(String);
-
-#[derive(Deserialize, Debug)]
-pub enum Currency {
-	Eur,
-}
-
-impl FromStr for Currency {
-	type Err = err::Msg;
-
-	fn from_str(s: &str) -> err::Result<Currency> {
-		match s {
-			"EUR" => Ok(Currency::Eur),
-			_ => Err(err::Msg::from(format!("Unknown currency {}", s))),
-		}
-	}
-}
 
 #[derive(Deserialize, Debug)]
 enum Turnus {
@@ -68,10 +51,65 @@ enum Turnus {
 	},
 }
 
-#[derive(Deserialize, Debug)]
-struct Amount {
-	cents: i32,
-	currency: Currency,
+#[derive(Default, Deserialize, Clone, Copy)]
+pub struct Amount {
+	pub cents: i32,
+	pub currency: Currency,
+}
+
+impl Amount {
+	fn pretty_printable(&self) -> String {
+		let major = self.cents / 100;
+		let minor = self.cents - major * 100;
+		format!(
+			"{}.{} {}",
+			major,
+			{
+				if minor == 0 {
+					String::from("00")
+				} else {
+					minor.to_string()
+				}
+			}
+			.as_str(),
+			self.currency
+		)
+	}
+}
+
+impl std::fmt::Debug for Amount {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		self.pretty_printable().fmt(f)
+	}
+}
+
+impl std::fmt::Display for Amount {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		self.pretty_printable().fmt(f)
+	}
+}
+
+impl std::ops::Add for Amount {
+	type Output = Self;
+
+	fn add(self, rhs: Self) -> Self::Output {
+		if self.currency != rhs.currency {
+			panic!("Unsupported addition between two currencies.")
+		}
+		Amount {
+			cents: self.cents + rhs.cents,
+			currency: Currency::Eur,
+		}
+	}
+}
+
+impl std::ops::AddAssign for Amount {
+	fn add_assign(&mut self, rhs: Self) {
+		if self.currency != rhs.currency {
+			panic!("Unsupported addition between two currencies.")
+		}
+		self.cents += rhs.cents;
+	}
 }
 
 impl FromStr for Amount {
@@ -127,10 +165,7 @@ fn deserialize_date<'de, D: Deserializer<'de>>(deserializer: D) -> Result<NaiveD
 		.map_err(err::Msg::from)
 		.map_err(de::Error::custom)?
 	{
-		Value::String(s) => NaiveDate::parse_from_str(&s, "%Y.%m.%d")
-			.map_err(|e| e.to_string())
-			.map_err(err::Msg::from)
-			.map_err(de::Error::custom),
+		Value::String(s) => datetime::parse_from_str(&s).map_err(de::Error::custom),
 		s => {
 			return Err(de::Error::custom(err::Msg::from(format!(
 				"Can't interprete date '{}'",
@@ -151,18 +186,18 @@ fn default_true() -> bool {
 #[derive(Deserialize, Debug)]
 pub struct Booking {
 	#[serde(deserialize_with = "deserialize_date")]
-	date: NaiveDate,
+	pub date: NaiveDate,
 	sender: Sender,
 	receiver: Receiver,
 	#[serde(deserialize_with = "deserialize_amount")]
-	amount: Amount,
+	pub amount: Amount,
 	topic: Topic,
 	#[serde(default)]
 	reference: Reference,
 	#[serde(default = "default_turnus")]
 	turnus: Turnus,
 	#[serde(rename = "labels")]
-	label_list: Vec<Label>,
+	pub label_list: Vec<Label>,
 }
 
 #[derive(Deserialize, Debug)]

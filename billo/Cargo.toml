@@ -19,6 +19,11 @@ lazy_static = { version = "1" }
 regex = { version = "1" }
 # date and time
 chrono = { version = "0.4" }
+# logging for internal use, e.g. lib.rs
+log = "0.4"
+# logging for external use, e.g. main.rs and examples
+env_logger = "0.10"
+
 
 [lib]
 name = "billo"

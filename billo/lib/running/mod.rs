@@ -1,20 +1,18 @@
 use crate::err;
+mod computing;
 mod configuring;
-use crate::running::configuring::{analysis, data};
+use crate::running::configuring::{AnalysisConfig, DataConfig};
+use log;
 use serde::de::DeserializeOwned;
 use std::fmt::Write as _;
 use std::fs;
 use std::path::PathBuf;
 
 #[derive(Clone)]
-pub struct AnalysisConfig {
-	pub filepath: PathBuf,
-}
+pub struct AnalysisConfigFilepath(pub PathBuf);
 
 #[derive(Clone)]
-pub struct DataConfig {
-	pub filepath: PathBuf,
-}
+pub struct DataConfigFilepath(pub PathBuf);
 
 fn ensure_input_config<'a, CONFIG: DeserializeOwned>(
 	config_filepathbuf: &PathBuf,
@@ -49,22 +47,45 @@ fn ensure_input_config<'a, CONFIG: DeserializeOwned>(
 	}
 }
 
-pub fn run(analysis_config: AnalysisConfig, data_config: DataConfig) {
-	let analysis_config: analysis::Config = match ensure_input_config(&analysis_config.filepath) {
+pub fn run(
+	analysis_config_filepath: AnalysisConfigFilepath,
+	data_config_filepath: DataConfigFilepath,
+) {
+	log::info!(
+		"Parsing analysis config {}",
+		analysis_config_filepath.0.to_string_lossy()
+	);
+	let analysis_config: AnalysisConfig = match ensure_input_config(&analysis_config_filepath.0) {
 		Ok(config) => config,
 		Err(err) => {
 			println!("{}", err);
-			std::process::exit(1)
+			std::process::exit(1);
 		}
 	};
-	let data_config: data::Config = match ensure_input_config(&data_config.filepath) {
+	log::info!(
+		"Parsing data config {}",
+		data_config_filepath.0.to_string_lossy()
+	);
+	let data_config: DataConfig = match ensure_input_config(&data_config_filepath.0) {
 		Ok(config) => config,
 		Err(err) => {
-			println!("{}", err);
+			log::error!("{}", err);
 			std::process::exit(1)
 		}
 	};
 
-	println!("{:?}", analysis_config);
-	println!("{:?}", data_config);
+	for analysis in &analysis_config.analysis_list {
+		match analysis {
+			configuring::Analysis::Sum {
+				headline,
+				label_list,
+				time_period,
+			} => {
+				let result_list = computing::compute_sums(&label_list, *time_period, &data_config);
+				println!("{}", headline);
+				println!("{:#?}", result_list);
+				println!();
+			}
+		};
+	}
 }
